@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-def daily_forex_ingest(date_str: str = None):
+def daily_forex_ingest(date_str: str = None, s3_client = None):
     if not date_str:
         date_str = datetime.now().strftime('%Y-%m-%d')
 
@@ -28,6 +28,7 @@ def daily_forex_ingest(date_str: str = None):
     dt = datetime.strptime(date_str, '%Y-%m-%d')
     year, month, day = dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d')
 
+    if not 
     s3_client = boto3.client('s3')
     s3_bucket = os.getenv('BUCKET_NAME')
     s3_key = f"raw/forex/year={year}/month={month}/day={day}/forex_{dt.strftime('%Y%m%d')}.json"
