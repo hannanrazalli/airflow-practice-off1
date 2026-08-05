@@ -1,0 +1,9 @@
+apache-airflow-providers-amazon
+apache-airflow-providers-postgres
+boto3
+python-dotenv
+pandas
+requests
+awswrangler
+
+# python -m pip install boto3 python-dotenv pandas requests
