@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_accounts
+    columns:
+      - name: account_id
+        tests:
+          - not_null:
+              config:
+                severity: error
+      - name: account_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['ACTIVE', 'SUSPENDED', 'DORMANT', 'VIP']
+      - name: account_tier
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['SILVER', 'GOLD', 'PLATINUM', 'BRONZE']
+  - name: stg_txn
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null:
+              config:
+                severity: error
+      - name: transaction_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['WITHDRAWAL', 'TRANSFER', 'PAYMENT', 'DEPOSIT']
