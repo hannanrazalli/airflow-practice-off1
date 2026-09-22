@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: int_accounts
+    columns:
+      - name: account_id
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+  - name: int_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+  - name: int_forex
+    columns:
+      - name: forex_id
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - unique:
+              config:
+                severity: error

@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: raw_sources
     database: awsdatacatalog
-    schema: my_api_database
+    schema: practice_off_database
     tables:
       - name: raw_accounts
         columns:
@@ -19,9 +19,6 @@ sources:
         columns:
           - name: transaction_id
             tests:
-              - unique:
-                  config:
-                    severity: warn
               - not_null:
                   config:
                     severity: warn

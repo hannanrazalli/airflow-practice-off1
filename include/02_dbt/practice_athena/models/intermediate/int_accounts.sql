@@ -14,24 +14,17 @@ deduplicate as (
     from stg_accounts
 ),
 
-final_int as (
+cleaned as (
     select
         account_id,
         customer_name,
         account_status,
         updated_at,
-        partition_date,
+
         {{ audit_columns('intermediate') }}
     from deduplicate
     where rn = 1
 )
 
-select
-    account_id,
-    customer_name,
-    account_status,
-    updated_at,
-    partition_date,
-    _processed_at,
-    _batch_id_int
-from final_int
+select *
+from cleaned

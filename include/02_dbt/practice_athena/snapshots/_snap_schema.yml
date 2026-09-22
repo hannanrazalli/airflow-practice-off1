@@ -1,0 +1,23 @@
+version: 2
+
+snapshots:
+  - name: snap_accounts
+    columns:
+      - name: dbt_scd_id
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+      - name: dbt_valid_from
+        tests:
+          - not_null:
+              config:
+                severity: error
+      - name: account_id
+        tests:
+          - not_null:
+              config:
+                severity: error
