@@ -1,0 +1,6 @@
+COPY INTO RAW_DB.LANDING_S3.RAW_FOREX (raw_data, file_name)
+FROM (
+    SELECT $1, METADATA$FILENAME
+    FROM @my_master_stage/forex/
+)
+FILE_FORMAT = (FORMAT_NAME = 'FF_JSON_DEFAULT');

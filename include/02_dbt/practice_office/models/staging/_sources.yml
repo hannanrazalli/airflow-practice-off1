@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: database
+    schema: staging_raw
+    tables:
+      - name: raw_customers
+      - name: raw_locations
+      - name: raw_orders

@@ -1,9 +1,12 @@
 apache-airflow-providers-amazon
 apache-airflow-providers-postgres
+apache-airflow-providers-snowflake
+apache-airflow-providers-google
 boto3
 python-dotenv
 pandas
 requests
 awswrangler
-
-# python -m pip install boto3 python-dotenv pandas requests
+dbt-core>=1.8.0
+# dbt-athena-community>=1.8.0
+astronomer-cosmos>=1.4.0

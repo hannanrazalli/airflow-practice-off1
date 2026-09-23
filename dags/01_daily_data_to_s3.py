@@ -1,27 +1,51 @@
 from pendulum import datetime
 from airflow.decorators import dag, task
+from airflow.providers.amazon.aws.operators.glue_crawler import GlueCrawlerOperator
 
-from include.forex_ingest import daily_forex_ingest
-from include.database_ingest import run_database_ingest
+default_args = {
+    "owner" : "Hannan",
+    "aws_conn_id" : "aws_default"
+}
 
 @dag(
-    dag_id='01_Daily_data_to_S3',
+    dag_id="01_daily_fx_to_s3",
+    default_args=default_args,
     schedule='@daily',
-    start_date=datetime(2026, 8, 1),
+    start_date=datetime(2026, 9, 9),
     catchup=False
 )
 def pipeline_to_s3():
-    run_forex = task(
-        daily_forex_ingest,
-        task_id = 'daily_forex_ingest'
+    # Task fx & db
+    @task(task_id="daily_forex")
+    def run_forex(ds=None):
+        from include.Data_ingestion.practice_forex import daily_forex
+        daily_forex(ds=ds)
+
+    @task(task_id="daily_database")
+    def run_db(ds=None):
+        from include.Data_ingestion.practice_db import daily_database
+        daily_database(ds=ds)
+
+    # Crawlers
+    crawler_fx = GlueCrawlerOperator(
+        task_id="run_forex_crawler",
+        config={"Name" : "api-data-crawler"}
     )
 
-    run_database = task(
-        run_database_ingest,
-        task_id = 'daily_db_ingest'
-    )
+    crawler_acc = GlueCrawlerOperator(
+            task_id="run_acc_crawler",
+            config={"Name" : "crawler_db_accounts"}
+        )
 
-    run_forex()
-    run_database()
+    crawler_txn = GlueCrawlerOperator(
+                task_id="run_txn_crawler",
+                config={"Name" : "crawler_db_txn"}
+            )
+
+    task_fx = run_forex()
+    task_db = run_db()
+
+    task_fx >> crawler_fx
+    task_db >> [crawler_acc, crawler_txn]
 
 pipeline_to_s3()

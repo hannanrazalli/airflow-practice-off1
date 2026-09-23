@@ -1,0 +1,15 @@
+practice_athena:
+  outputs:
+    dev:
+      database: awsdatacatalog
+      region_name: ap-southeast-1
+      # s3_data_dir: "{{ env_var('ATHENA_S3_DATA_DIR', 's3://practice1-212105053682-ap-southeast-1-an/dbt-output/') }}"
+      s3_data_dir: s3://practice1-212105053682-ap-southeast-1-an/dbt-output/
+      # s3_staging_dir: "{{ env_var('ATHENA_S3_STAGING_DIR', 's3://practice1-212105053682-ap-southeast-1-an/athena-results/') }}"
+      s3_staging_dir: s3://practice1-212105053682-ap-southeast-1-an/athena-results/
+      schema: practice_off_database
+      threads: 4
+      type: athena
+      work_group: primary
+      # aws_profile_name: default
+  target: dev

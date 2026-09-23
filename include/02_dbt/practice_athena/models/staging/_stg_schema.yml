@@ -16,7 +16,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['ACTIVE', 'SUSPENDED']
+                values: ['ACTIVE', 'SUSPENDED', 'DORMANT', 'VIP']
 
   - name: stg_txn
     columns:
