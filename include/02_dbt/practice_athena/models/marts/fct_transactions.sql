@@ -1,3 +1,5 @@
+-- depends_on: {{ ref('dim_accounts') }}
+
 {{ config(
     materialized='incremental',
     incremental_strategy='merge',
