@@ -26,6 +26,7 @@ profile_config = ProfileConfig(
             "schema": "practice_off_database",
             "database": "awsdatacatalog",
             "s3_staging_dir": "s3://practice1-212105053682-ap-southeast-1-an/athena-results/",
+            "s3_data_dir": "s3://practice1-212105053682-ap-southeast-1-an/dbt-output/",
             "region_name": "ap-southeast-1",
         },
     ),
