@@ -8,6 +8,9 @@ models:
           - not_null:
               config:
                 severity: error
+          - unique:
+              config:
+                severity: error
 
   - name: int_transactions
     columns:

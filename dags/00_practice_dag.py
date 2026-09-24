@@ -1,5 +1,4 @@
 import os
-import shutil
 from pendulum import datetime
 from airflow.decorators import dag
 from airflow.providers.amazon.aws.operators.glue_crawler import GlueCrawlerRunOperator
@@ -23,10 +22,10 @@ profile_config = ProfileConfig(
     profile_mapping=AthenaAccessKeyProfileMapping(
         conn_id="aws_default",
         profile_args={
-            "schema": "practice_off_database",
+            "schema": os.getenv("DBT_TARGET_SCHEMA", "practice_off_database"),
             "database": "awsdatacatalog",
-            "s3_staging_dir": "s3://practice1-212105053682-ap-southeast-1-an/athena-results/",
-            "s3_data_dir": "s3://practice1-212105053682-ap-southeast-1-an/dbt-output/",
+            "s3_staging_dir": os.getenv("S3_ATHENA_STAGING_DIR", "s3://practice1-212105053682-ap-southeast-1-an/athena-results/"),
+            "s3_data_dir": os.getenv("S3_ATHENA_DATA_DIR", "s3://practice1-212105053682-ap-southeast-1-an/dbt-output/"),
             "region_name": "ap-southeast-1",
         },
     ),
