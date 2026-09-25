@@ -1,49 +1,19 @@
-import os
 from pendulum import datetime
-from airflow.decorators import dag
+from datetime import timedelta
+from airflow.decorators import dag, task
 from airflow.providers.amazon.aws.operators.glue_crawler import GlueCrawlerRunOperator
 
-from cosmos import ProjectConfig, ProfileConfig, ExecutionConfig, RenderConfig, DbtTaskGroup
-from cosmos.constants import ExecutionMode, InvocationMode, LoadMode
-from cosmos.profiles import AthenaAccessKeyProfileMapping
-
-DBT_PROJECT_DIR = "/usr/local/airflow/include/02_dbt/practice_athena"
-DBT_EXECUTABLE = "/usr/local/airflow/dbt_venv/bin/dbt"
+from cosmos import DbtTaskGroup
+from include.utils.slack_alerts import slack_failure_alert
+from include.utils.cosmos_config import project_config, profile_config, execution_config, render_config
 
 default_args = {
     "owner": "Hannan",
     "aws_conn_id": "aws_default",
-    "retries": 1
+    "retries": 1,
+    "retry_delay": timedelta(minutes=1),
+    "on_failure_callback": slack_failure_alert
 }
-
-profile_config = ProfileConfig(
-    profile_name="practice_athena",
-    target_name="dev",
-    profile_mapping=AthenaAccessKeyProfileMapping(
-        conn_id="aws_default",
-        profile_args={
-            "schema": os.getenv("DBT_TARGET_SCHEMA", "practice_off_database"),
-            "database": "awsdatacatalog",
-            "s3_staging_dir": os.getenv("S3_ATHENA_STAGING_DIR", "s3://practice1-212105053682-ap-southeast-1-an/athena-results/"),
-            "s3_data_dir": os.getenv("S3_ATHENA_DATA_DIR", "s3://practice1-212105053682-ap-southeast-1-an/dbt-output/"),
-            "region_name": "ap-southeast-1",
-        },
-    ),
-)
-
-execution_config = ExecutionConfig(
-    execution_mode=ExecutionMode.LOCAL,
-    dbt_executable_path=DBT_EXECUTABLE,
-    invocation_mode=InvocationMode.SUBPROCESS,
-)
-
-render_config = RenderConfig(
-    load_method=LoadMode.DBT_LS,
-    dbt_executable_path=DBT_EXECUTABLE,
-    invocation_mode=InvocationMode.SUBPROCESS,
-)
-
-project_config = ProjectConfig(DBT_PROJECT_DIR)
 
 @dag(
     dag_id="01_daily_fx_to_s3_practice",
@@ -53,8 +23,6 @@ project_config = ProjectConfig(DBT_PROJECT_DIR)
     catchup=False
 )
 def pipeline_to_s3():
-    from airflow.decorators import task
-
     @task(task_id="daily_forex")
     def run_forex(ds=None):
         from include.Data_ingestion.practice_forex import daily_forex
