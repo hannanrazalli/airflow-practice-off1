@@ -3,10 +3,15 @@ from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.providers.amazon.aws.operators.glue_crawler import GlueCrawlerRunOperator
 
+from cosmos import DbtTaskGroup
+from include.utils.pratice_cosmos import project_config, profile_config, execution_config, render_config
+from include.utils.practice_slack import slack_failure_alert
+
 default_args = {
     "owner" : "Hannan_Razalli",
     "retries" : "1",
-    "retry_delay" : timedelta(minutes=1)
+    "retry_delay" : timedelta(minutes=1),
+    "on_failure_callback": slack_failure_alert
 }
 
 @dag(
@@ -45,10 +50,21 @@ def practice_pipeline():
         wait_for_completion=True
     )
 
+    dbt_build = DbtTaskGroup(
+        group_id="dbt_build_all",
+        project_config=project_config,
+        profile_config=profile_config,
+        execution_config=execution_config,
+        render_config=render_config,
+        operator_args={"install_deps": True},
+    )
+
     forex = run_forex()
     database = run_db()
 
     forex >> crawler_fx
     database >> [crawler_acc, crawler_txn]
+
+    [crawler_fx, crawler_acc, crawler_txn] >> dbt_build
 
 practice_pipeline()
