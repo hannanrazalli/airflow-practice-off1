@@ -41,9 +41,10 @@ jobs:
 
       - name: Run test
         run: |
+          airflow db migrate
           python -c "
           from airflow.models import DagBag
           dagbag = DagBag(dag_folder='dags/')
           assert len(dagbag.import_errors) == 0, f'DAG Import Errors: {dagbag.import_errors}'
-          print('✅ All DAGs successfully uploaded without logic error.')
+          print('✅ Semua DAG berjaya dimuatkan tanpa ralat logik.')
           "
