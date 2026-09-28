@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
+
 from cosmos import ExecutionConfig, ProfileConfig, ProjectConfig, RenderConfig
 from cosmos.constants import ExecutionMode, InvocationMode, LoadMode
 from cosmos.profiles import AthenaAccessKeyProfileMapping
 
 # --- 1. PROJECT CONFIG (Di mana kod dbt) ---
-DBT_PROJECT_DIR = Path(__file__).parent.parent / "include" / "02_dbt" / "practice_athena"
+DBT_PROJECT_DIR = Path(__file__).parent.parent / "02_dbt" / "practice_athena"
 project_config = ProjectConfig(DBT_PROJECT_DIR)
 
 # --- 2. PROFILE CONFIG (Sambungan Database & S3) ---
