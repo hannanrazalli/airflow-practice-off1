@@ -1,10 +1,11 @@
-import time
-import logging
 import json
+import logging
 import os
-import requests
-import pandas as pd
+import time
 from datetime import datetime, timezone
+
+import pandas as pd
+import requests
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
 logging.basicConfig(
@@ -30,10 +31,9 @@ def _to_ndjson(records: list) -> str:
     ]
     return "\n".join(lines)
 
-
-def daily_forex(ds: str = None):
+def daily_forex(ds: str | None = None):
     if not ds:
-        ds = datetime.now().strftime('%Y-%m-%d')
+        ds = datetime.now(tz=timezone.utc).strftime('%Y-%m-%d')
 
     url = "https://api.frankfurter.dev/v2/rates"
     params = {"base": "USD", "date": ds}
@@ -42,10 +42,7 @@ def daily_forex(ds: str = None):
     response.raise_for_status()
     data = response.json()
 
-    if not isinstance(data, list):
-        raise ValueError(f"Unexpected response shape dari Frankfurter API: {type(data)} -> {data}")
-
-    dt = datetime.strptime(ds, '%Y-%m-%d')
+    dt = datetime.strptime(ds, '%Y-%m-%d').replace(tzinfo=timezone.utc)
     year, month, day = dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d')
 
     s3_bucket = os.getenv("BUCKET_NAME")

@@ -1,5 +1,6 @@
 import os
-from cosmos import ProjectConfig, ProfileConfig, ExecutionConfig, RenderConfig
+
+from cosmos import ExecutionConfig, ProfileConfig, ProjectConfig, RenderConfig
 from cosmos.constants import ExecutionMode, InvocationMode, LoadMode
 from cosmos.profiles import AthenaAccessKeyProfileMapping
 

@@ -1,28 +1,24 @@
-name: CI Ujian Asas DAG
+name: CI test
 
-# 1. BILA pengawal ini patut bekerja?
 on:
   push:
     branches:
-      - main  # (atau 'master', bergantung pada nama branch kau)
+      - main
 
-# 2. APA yang pengawal ini patut buat?
 jobs:
-  semak-kod:
-    runs-on: ubuntu-latest  # GitHub sediakan server Linux percuma untuk test kod
-    
+  code_linter:
+    runs-on: ubuntu-latest
+
     steps:
-      # Langkah A: Sedut kod kau ke dalam server percuma ini
-      - name: Tarik kod dari repositori
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      # Langkah B: Pasang Python (kerana Airflow guna Python)
-      - name: Sediakan persekitaran Python
-        uses: actions/setup-python@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
-      # Langkah C: Ujian sebenar - Cari ralat sintaks (typo/indentasi)
-      - name: Semak ralat sintaks pada fail DAG
-        run: |
-          python -m py_compile dags/*.py
+      - name: Install dependencies
+        run: pip install ruff sqlfluff
+
+      - name: Run test
+        run: ruff check dags/ include/

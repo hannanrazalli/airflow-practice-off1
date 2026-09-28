@@ -1,7 +1,6 @@
-import os
-from cosmos import ProjectConfig, ProfileConfig, ExecutionConfig, RenderConfig
-from cosmos.profiles import AthenaAccessKeyProfileMapping
+from cosmos import ExecutionConfig, ProfileConfig, ProjectConfig, RenderConfig
 from cosmos.constants import ExecutionMode, InvocationMode, LoadMode
+from cosmos.profiles import AthenaAccessKeyProfileMapping
 
 DBT_PROJECT_DIR = "/usr/local/airflow/include/02_dbt/practice_athena"
 project_config = ProjectConfig(dbt_project_path=DBT_PROJECT_DIR)

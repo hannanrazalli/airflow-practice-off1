@@ -1,11 +1,17 @@
-from pendulum import datetime
 from datetime import timedelta
+
 from airflow.decorators import dag, task
 from airflow.providers.amazon.aws.operators.glue_crawler import GlueCrawlerRunOperator
-
 from cosmos import DbtTaskGroup
-from include.utils.pratice_cosmos import project_config, profile_config, execution_config, render_config
+from pendulum import datetime
+
 from include.utils.practice_slack import slack_failure_alert
+from include.utils.pratice_cosmos import (
+    execution_config,
+    profile_config,
+    project_config,
+    render_config,
+)
 
 default_args = {
     "owner" : "Hannan_Razalli",

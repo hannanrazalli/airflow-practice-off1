@@ -1,11 +1,11 @@
 import logging
 import os
-import pandas as pd
+from datetime import datetime, timezone
+
 import awswrangler as wr
-from datetime import datetime
-from sqlalchemy import create_engine
-from airflow.providers.postgres.hooks.postgres import PostgresHook
+import pandas as pd
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 logging.basicConfig(
     level=logging.INFO,
@@ -14,9 +14,9 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-def daily_database(ds: str = None):
+def daily_database(ds: str | None = None):
     if not ds:
-        ds = datetime.now().strftime('%Y-%m-%d')
+        ds = datetime.now(tz=timezone.utc).strftime('%Y-%m-%d')
 
     pg_hook = PostgresHook(postgres_conn_id='postgres_default')
     s3_hook = S3Hook(aws_conn_id='aws_default')
@@ -29,12 +29,12 @@ def daily_database(ds: str = None):
         "transactions" : "transaction_date"
     }
 
-    for table, date in TABLES.items():
+    for table in TABLES:
         query = f"SELECT * FROM {table}"
         chunk_size = 100_000
         df_stream = pd.read_sql_query(query, con=engine, chunksize=chunk_size)
 
-        dt = datetime.strptime(ds, '%Y-%m-%d')
+        dt = datetime.strptime(ds, '%Y-%m-%d').replace(tzinfo=timezone.utc)
         year, month, day = dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d')
 
         s3_bucket = os.getenv("BUCKET_NAME")

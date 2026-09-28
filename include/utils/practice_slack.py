@@ -1,6 +1,7 @@
 import requests
 from airflow.hooks.base import BaseHook
 
+
 def slack_failure_alert(context):
     conn = BaseHook.get_connection('slack_alert_conn')
     slack_webhook_url = f"{conn.host}{conn.password}"
