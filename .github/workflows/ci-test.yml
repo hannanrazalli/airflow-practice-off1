@@ -67,7 +67,7 @@ jobs:
         run: |
           cd include/02_dbt/practice_athena
           
-          cat < profiles.yml
+          cat << EOF > profiles.yml
           practice_athena:
             target: dev
             outputs:
