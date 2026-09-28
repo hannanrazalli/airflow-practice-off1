@@ -10,15 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: pip install ruff sqlfluff
 
       - name: Run test
         run: ruff check dags/ include/
+
+  airflow_dagbag_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install apache-airflow
+          pip install -r requirements.txt
+
+      - name: Run test
+        run: |
+          python -c "
+          from airflow.models import DagBag
+          dagbag = DagBag(dag_folder='dags/')
+          assert len(dagbag.import_errors) == 0, f'DAG Import Errors: {dagbag.import_errors}'
+          print('✅ All DAGs successfully uploaded without logic error.')
+          "
