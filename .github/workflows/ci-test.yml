@@ -2,7 +2,9 @@ name: CI test
 
 on:
   push:
-    branches:
+    branches-ignore:
+      - main
+  pull_request:
       - main
 
 jobs:
