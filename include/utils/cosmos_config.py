@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 
 from cosmos import ExecutionConfig, ProfileConfig, ProjectConfig, RenderConfig
@@ -18,15 +19,21 @@ profile_config = ProfileConfig(
         profile_args={
             "schema": os.getenv("DBT_TARGET_SCHEMA", "practice_off_database"),
             "database": "awsdatacatalog",
-            "s3_staging_dir": os.getenv("S3_ATHENA_STAGING_DIR", "s3://practice1-212105053682-ap-southeast-1-an/athena-results/"),
-            "s3_data_dir": os.getenv("S3_ATHENA_DATA_DIR", "s3://practice1-212105053682-ap-southeast-1-an/dbt-output/"),
+            "s3_staging_dir": os.getenv(
+                "S3_ATHENA_STAGING_DIR",
+                "s3://practice1-212105053682-ap-southeast-1-an/athena-results/",
+            ),
+            "s3_data_dir": os.getenv(
+                "S3_ATHENA_DATA_DIR",
+                "s3://practice1-212105053682-ap-southeast-1-an/dbt-output/",
+            ),
             "region_name": "ap-southeast-1",
         },
     ),
 )
 
 # --- 3. EXECUTION CONFIG (Cara jalankan command) ---
-DBT_EXECUTABLE = "/usr/local/airflow/dbt_venv/bin/dbt"
+DBT_EXECUTABLE = shutil.which("dbt") or "/usr/local/airflow/dbt_venv/bin/dbt"
 execution_config = ExecutionConfig(
     execution_mode=ExecutionMode.LOCAL,
     dbt_executable_path=DBT_EXECUTABLE,
