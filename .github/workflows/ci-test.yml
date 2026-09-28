@@ -67,16 +67,16 @@ jobs:
         run: |
           cd include/02_dbt/practice_athena
           
-          `cat < profiles.yml
+          cat < profiles.yml
           practice_athena:
-          target: dev
-          outputs:
-          dev:
-          type: athena
-          s3_staging_dir: s3://dummy-bucket/
-          region_name: ap-southeast-1
-          schema: dummy_schema
-          database: awsdatacatalog
+            target: dev
+            outputs:
+              dev:
+                type: athena
+                s3_staging_dir: s3://dummy-bucket/
+                region_name: ap-southeast-1
+                schema: dummy_schema
+                database: awsdatacatalog
           EOF
           
           dbt deps --profiles-dir .
