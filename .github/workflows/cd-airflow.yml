@@ -58,3 +58,23 @@ jobs:
             cd ~/practice-airflow-1
             astro dev restart
             docker ps
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          script: |
+            for i in $(seq 1 12); do
+              STATUS=$(curl -s http://localhost:8080/api/v2/monitor/health | grep -o '"status":"healthy"' | wc -l)
+              if [ "$STATUS" -ge "2" ]; then
+                echo "Airflow is healthy."
+                exit 0
+              fi
+              echo "Attempt $i: not healthy yet, waiting 10s..."
+              sleep 10
+            done
+            echo "Airflow failed health check after 120 seconds."
+            exit 1
